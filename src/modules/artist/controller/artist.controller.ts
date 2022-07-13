@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { ArtistService } from '../service/artist.service';
 import { IArtist } from '../artist.interface';
 import { CreateArtistDto } from '../dto/create-artist.dto';
@@ -17,17 +17,13 @@ export class ArtistController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.CREATED) 
-  public async addArtist(@Body() CreateArtistDto: CreateArtistDto) {
-    if (!CreateArtistDto.name) {
-      throw new BadRequestException('Body does not contain required fields');
-    }
+  async addArtist(@Body() CreateArtistDto: CreateArtistDto): Promise<IArtist> {
     return this.artistService.addArtist(CreateArtistDto);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  public async getArtisiById(@Param('id') id: string): Promise<IArtist> {
+  public async getArtisiById(@Param('id') id: string) {
     
     if (!checkUUID(id)) throw new BadRequestException('Artist ID is invalid');
     if (!(await this.artistService.getArtisiById(id))) throw new NotFoundException('Artist with this ID not found');

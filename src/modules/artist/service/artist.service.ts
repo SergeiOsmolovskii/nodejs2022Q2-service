@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { IArtist } from '../artist.interface';
+import { CreateArtistDto } from '../dto/create-artist.dto';
 
 @Injectable()
 export class ArtistService {
@@ -11,9 +12,10 @@ export class ArtistService {
     return this.artists;
   }
 
-  public async addArtist(artist): Promise<IArtist> { 
-    this.artists.push({ ...artist, id: uuid() });
-    return artist;
+  public addArtist(artist: CreateArtistDto): IArtist { 
+    const newArtist = { ...artist, id: uuid() };
+    this.artists.push(newArtist);
+    return newArtist;
   }
 
   public async getArtisiById(id: string): Promise<IArtist> {
@@ -22,8 +24,8 @@ export class ArtistService {
 
   public async updateArtist(id: string, artist): Promise<IArtist> {
     const index = this.artists.findIndex(artist => artist.id === id);
-    this.artists[index] = { ...artist, id };
-    return artist;
+    const updatedArtist = this.artists[index] = { ...artist, id };
+    return updatedArtist;
   }
 
   public async deleteArtist(id: string): Promise<IArtist> {
