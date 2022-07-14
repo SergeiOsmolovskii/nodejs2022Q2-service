@@ -34,8 +34,8 @@ export class AlbumController {
   @HttpCode(HttpStatus.OK)
   public async updateAlbum(@Param('id') id: string, @Body() album: UpdateAlbumDto): Promise<IAlbum> {
 
-    if (!checkUUID(id)) throw new BadRequestException('Album ID is invalid');
-    if (!(await this.albumService.getAlbumById(id))) throw new NotFoundException('Album with this ID not found');
+     if (!checkUUID(id)) throw new BadRequestException('Album ID is invalid');
+     if (!(await this.albumService.getAlbumById(id))) throw new NotFoundException('Album with this ID not found');
 
     return this.albumService.updateAlbum(id, album);
   }
@@ -45,7 +45,7 @@ export class AlbumController {
   public async deleteAlbum(@Param('id') id: string): Promise<IAlbum> {
       
       if (!checkUUID(id)) throw new BadRequestException('Album ID is invalid');
-      if (!(await this.albumService.getAlbumById(id))) throw new NotFoundException('Album with this ID not found');
+      if (!await this.albumService.getAlbumById(id)) throw new NotFoundException('Album with this ID not found');
   
       return this.albumService.deleteAlbum(id);
   }

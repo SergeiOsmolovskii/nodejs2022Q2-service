@@ -1,5 +1,4 @@
-import { Optional } from "@nestjs/common";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class UpdateAlbumDto {
 
@@ -11,6 +10,7 @@ export class UpdateAlbumDto {
   @IsNotEmpty()
   year: number;
 
-  @Optional()
+  @IsString()
+  @IsOptional()
   artistId: string | null;
 }
