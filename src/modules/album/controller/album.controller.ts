@@ -42,7 +42,7 @@ export class AlbumController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteAlbum(@Param('id') id: string): Promise<IAlbum> {
+  public async deleteAlbum(@Param('id') id: string): Promise<void> {
       
       if (!checkUUID(id)) throw new BadRequestException('Album ID is invalid');
       if (!await this.albumService.getAlbumById(id)) throw new NotFoundException('Album with this ID not found');

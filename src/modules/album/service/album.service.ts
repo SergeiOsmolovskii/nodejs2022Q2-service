@@ -1,38 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { IAlbum } from '../album.interface';
 import { v4 as uuid } from 'uuid';
+import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
 
 @Injectable()
 export class AlbumService {
 
-  private readonly albums: IAlbum[] = [];
+  constructor(private inMemoryDB: InMemoryDbService) {}
 
   public async getAlbums(): Promise<IAlbum[]> {
-    return this.albums;
+    return this.inMemoryDB.albums;
   }
 
   public async addAlbum(album: IAlbum): Promise<IAlbum> {
     const newAlbum = { ...album, id: uuid() };
-    this.albums.push(newAlbum);
+    this.inMemoryDB.albums.push(newAlbum);
     return newAlbum;
   }
 
   public async getAlbumById(id: string): Promise<IAlbum> {
-    return this.albums.find(album => album.id === id);
+    return this.inMemoryDB.albums.find(album => album.id === id);
   }
 
   public async updateAlbum(id: string, album: IAlbum): Promise<IAlbum> {
-    const index = this.albums.findIndex(album => album.id === id);
+    const index = this.inMemoryDB.albums.findIndex(album => album.id === id);
     const updatedAlbum = { ...album, id };
-    this.albums[index] = updatedAlbum;
+    this.inMemoryDB.albums[index] = updatedAlbum;
     return updatedAlbum;
   }
 
-  public async deleteAlbum(id: string): Promise<IAlbum> {
-    const index = this.albums.findIndex(album => album.id === id);
-    const album = this.albums[index];
-    this.albums.splice(index, 1);
-    return album;
+  public async deleteAlbum(id: string): Promise<void> {
+    const index = this.inMemoryDB.albums.findIndex(album => album.id === id);
+    const album = this.inMemoryDB.albums[index];
+    const track = this.inMemoryDB.tracks.findIndex(track => track.albumId === album.id);
+    
+    if (track !== -1) {
+      this.inMemoryDB.tracks[track].albumId = null;
+      return null;
+    }
+    this.inMemoryDB.albums.splice(index, 1);
   }
 
 }

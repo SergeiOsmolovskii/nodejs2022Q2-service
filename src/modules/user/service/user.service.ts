@@ -3,13 +3,15 @@ import { IUser } from '../user.interface';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { v4 as uuid } from 'uuid';
 import { UpdatePasswordDto } from '../dto/update-password.tdo';
+import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
 
 @Injectable()
 export class UserService {
-  private readonly users: IUser[] = [];
+
+  constructor(private readonly inMemoryDB: InMemoryDbService) {}
 
   public async getAllUsers(): Promise<IUser[]> {
-    return this.users;
+    return this.inMemoryDB.users;
   }
 
   public async createUser(user: CreateUserDto): Promise<IUser> {
@@ -24,13 +26,13 @@ export class UserService {
       updatedAt: updatedAt,
     };
 
-    this.users.push({...newUser, password: user.password});
+    this.inMemoryDB.users.push({...newUser, password: user.password});
     return newUser;
   }
 
   public async getUserById(id: string): Promise<IUser> {
 
-    const user = this.users.find(user => user.id === id);
+    const user = this.inMemoryDB.users.find(user => user.id === id);
    
     const currentData = {
       login: user.login,
@@ -44,8 +46,8 @@ export class UserService {
   }
 
   public async updateUser(id: string, passwords: UpdatePasswordDto): Promise<IUser> {
-    const index = this.users.findIndex(user => user.id === id);
-    const currentUser = this.users[index];
+    const index = this.inMemoryDB.users.findIndex(user => user.id === id);
+    const currentUser = this.inMemoryDB.users[index];
 
     if (currentUser.password !== passwords.oldPassword) {
       throw new ForbiddenException('Old password is incorrect');
@@ -59,7 +61,7 @@ export class UserService {
       updatedAt: +Date.now()
     };
 
-    this.users[index] = {
+    this.inMemoryDB.users[index] = {
       ...updatedUser,
       password: passwords.newPassword
     };
@@ -68,9 +70,9 @@ export class UserService {
   }
 
   public async deleteUser(id: string): Promise<IUser> {
-    const index = this.users.findIndex(user => user.id === id);
-    const user = this.users[index];
-    this.users.splice(index, 1);
+    const index = this.inMemoryDB.users.findIndex(user => user.id === id);
+    const user = this.inMemoryDB.users[index];
+    this.inMemoryDB.users.splice(index, 1);
     return user;
   }
 

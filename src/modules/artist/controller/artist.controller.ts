@@ -43,7 +43,7 @@ export class ArtistController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteArtist(@Param('id') id: string): Promise<IArtist> {
+  public async deleteArtist(@Param('id') id: string): Promise<void> {
 
     if (!checkUUID(id)) throw new BadRequestException('Artist ID is invalid');
     if (!(await this.artistService.getArtisiById(id))) throw new NotFoundException('Artist with this ID not found');

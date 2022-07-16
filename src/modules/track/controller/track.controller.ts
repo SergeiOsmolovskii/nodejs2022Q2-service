@@ -42,7 +42,7 @@ export class TrackController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteTrack(@Param('id') id: string): Promise<ITrack> {
+  public async deleteTrack(@Param('id') id: string): Promise<void> {
       
       if (!checkUUID(id)) throw new BadRequestException('Track ID is invalid');
       if (!await this.trackService.getTrackById(id)) throw new NotFoundException('Track with this ID not found');

@@ -1,38 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { ITrack } from '../track.interface';
 import { v4 as uuid } from 'uuid';
+import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
 
 @Injectable()
 export class TrackService {
   
-  private readonly tracks: ITrack[] = [];
+  constructor(private readonly inMemoryDB: InMemoryDbService) {}
 
   public async getTracks(): Promise<ITrack[]> {
-    return this.tracks;
+    return this.inMemoryDB.tracks;
   }
 
   public async addTrack(track: ITrack): Promise<ITrack> {
     const newTrack = { ...track, id: uuid() };
-    this.tracks.push(newTrack);
+    this.inMemoryDB.tracks.push(newTrack);
     return newTrack;
   }
 
   public async getTrackById(id: string): Promise<ITrack> {
-    return this.tracks.find(track => track.id === id);
+    return this.inMemoryDB.tracks.find(track => track.id === id);
   }
 
   public async updateTrack(id: string, track: ITrack): Promise<ITrack> {
-    const index = this.tracks.findIndex(track => track.id === id);
+    const index = this.inMemoryDB.tracks.findIndex(track => track.id === id);
     const updatedTrack = { ...track, id };
-    this.tracks[index] = updatedTrack;
+    this.inMemoryDB.tracks[index] = updatedTrack;
     return updatedTrack;
   }
 
-  public async deleteTrack(id: string): Promise<ITrack> {
-    const index = this.tracks.findIndex(track => track.id === id);
-    const track = this.tracks[index];
-    this.tracks.splice(index, 1);
-    return track;
+  public async deleteTrack(id: string): Promise<void> {
+    const index = this.inMemoryDB.tracks.findIndex(track => track.id === id);
+    const track = this.inMemoryDB.tracks[index];
+    this.inMemoryDB.tracks.splice(index, 1);
   }
 
 }
