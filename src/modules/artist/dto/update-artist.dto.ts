@@ -4,7 +4,7 @@ export class UpdateArtistDto {
   
   @IsString()
   @IsNotEmpty()
-  name: String;
+  name: string;
 
   @IsBoolean() 
   @IsNotEmpty()

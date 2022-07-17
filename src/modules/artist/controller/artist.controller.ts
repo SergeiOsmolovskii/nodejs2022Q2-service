@@ -17,8 +17,8 @@ export class ArtistController {
   }
 
   @Post()
-  async addArtist(@Body() CreateArtistDto: CreateArtistDto): Promise<IArtist> {
-    return this.artistService.addArtist(CreateArtistDto);
+  async addArtist(@Body() artist: CreateArtistDto): Promise<IArtist> {
+    return this.artistService.addArtist(artist);
   }
 
   @Get('/:id')
@@ -33,12 +33,12 @@ export class ArtistController {
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  public async updateArtist(@Param('id') id: string, @Body() UpdateArtistDto: UpdateArtistDto): Promise<IArtist> {
+  public async updateArtist(@Param('id') id: string, @Body() artist: UpdateArtistDto): Promise<IArtist> {
 
     if (!checkUUID(id)) throw new BadRequestException('Artist ID is invalid');
     if (!(await this.artistService.getArtisiById(id))) throw new NotFoundException('Artist with this ID not found');
 
-    return this.artistService.updateArtist(id, UpdateArtistDto);
+    return this.artistService.updateArtist(id, artist);
   }
 
   @Delete('/:id')

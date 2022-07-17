@@ -31,7 +31,6 @@ export class TrackService {
 
   public async deleteTrack(id: string): Promise<void> {
     const index = this.inMemoryDB.tracks.findIndex(track => track.id === id);
-    const track = this.inMemoryDB.tracks[index];
     this.inMemoryDB.tracks.splice(index, 1);
   }
 

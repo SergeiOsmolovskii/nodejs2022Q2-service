@@ -3,7 +3,7 @@ import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
 import { IAlbum } from 'src/modules/album/album.interface';
 import { IArtist } from 'src/modules/artist/artist.interface';
 import { ITrack } from 'src/modules/track/track.interface';
-import { IFavorites, IFavoritesIds } from '../favorites.interface';
+import { IFavorites } from '../favorites.interface';
 
 @Injectable()
 export class FavoritesService {
