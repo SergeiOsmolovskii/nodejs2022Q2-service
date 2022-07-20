@@ -1,0 +1,34 @@
+version: "3.0"
+
+networks:
+  user-defined-bridge:
+    driver: bridge
+
+services:
+  
+  node:
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+    networks:
+      - postgres-app-network
+    restart: unless-stopped
+
+  postgres:
+    build: ./postgres
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    networks:
+      - postgres-app-network
+    restart: unless-stopped
+volumes:
