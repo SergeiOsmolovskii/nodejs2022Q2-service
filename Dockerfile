@@ -1,6 +1,6 @@
 FROM node:16-alpine
 
-WORKDIR /src
+WORKDIR /usr/src/app
 
 COPY package.json .
 
@@ -12,4 +12,4 @@ ENV PORT 4000
 
 EXPOSE $PORT
 
-CMD ["npm", "start"]
+RUN npm run build

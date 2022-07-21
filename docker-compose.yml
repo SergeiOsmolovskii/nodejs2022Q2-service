@@ -1,34 +1,41 @@
-version: "3.0"
-
+version: '3.7'
 networks:
-  user-defined-bridge:
+  node-postgres-bridge:
     driver: bridge
-
+    
 services:
-  
   node:
-    build: .
+    container_name: service_app
+    image: anarxist277/rest-service:service_app
+    env_file:
+      - .env
+    build:
+      context: .
     ports:
-      - ${PORT}:${PORT}
+      - '${PORT}:${PORT}'
+    restart: always
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
     depends_on:
       - postgres
-    environment:
-      PORT: ${PORT}
-      NODE_ENV: ${NODE_ENV}
     networks:
-      - postgres-app-network
-    restart: unless-stopped
-
+      - node-postgres-bridge
   postgres:
-    build: ./postgres
+    container_name: service_DB
+    image: anarxist277/rest-service:service_DB
+    env_file:
+      - .env
+    build: ./database/
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PORT: ${POSTGRES_PORT}
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    restart: always
+    volumes:
+      - database:/var/lib/postgresql/data
+      - database-logs:/logs
     networks:
-      - postgres-app-network
-    restart: unless-stopped
+      - node-postgres-bridge
 volumes:
+  database:
+  database-logs:
