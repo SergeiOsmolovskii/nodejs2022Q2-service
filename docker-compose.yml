@@ -2,7 +2,7 @@ version: '3.7'
 networks:
   node-postgres-bridge:
     driver: bridge
-    
+
 services:
   node:
     container_name: service_app
@@ -13,7 +13,7 @@ services:
       context: .
     ports:
       - '${PORT}:${PORT}'
-    restart: always
+    restart: unless-stopped
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -30,7 +30,7 @@ services:
     build: ./database/
     ports:
       - '${POSTGRES_PORT}:${POSTGRES_PORT}'
-    restart: always
+    restart: unless-stopped
     volumes:
       - database:/var/lib/postgresql/data
       - database-logs:/logs

@@ -1,4 +1,4 @@
-# Home Library Service
+# Home Library Service: Part 2 - Containerization, Docker
 
 ## Prerequisites
 
@@ -9,7 +9,12 @@
 
 ```
 git clone https://github.com/SergeiOsmolovskii/nodejs2022Q2-service.git
-git checkout feat/rest-service
+git checkout feat/conteinerization
+```
+
+## Start
+```
+docker compose up
 ```
 
 ## Installing NPM modules

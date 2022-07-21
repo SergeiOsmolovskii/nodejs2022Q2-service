@@ -8,8 +8,8 @@ RUN npm install
 
 COPY . .
 
-ENV PORT 4000
+ENV PORT ${PORT}
 
-EXPOSE $PORT
+EXPOSE ${PORT}
 
 RUN npm run build
