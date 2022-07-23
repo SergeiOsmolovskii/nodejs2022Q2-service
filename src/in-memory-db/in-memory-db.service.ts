@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { IAlbum } from 'src/modules/album/album.interface';
 import { IFavoritesIds } from 'src/modules/favorites/favorites.interface';
 import { ITrack } from 'src/modules/track/track.interface';
 
@@ -15,7 +14,7 @@ export class InMemoryDbService {
     return InMemoryDbService.instance;
   }
 
-  public albums: IAlbum[] = [];
+  public albums = [];
   public artists = [];
   public tracks: ITrack[] = [];
   public favorites: IFavoritesIds = {

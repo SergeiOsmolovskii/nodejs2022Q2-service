@@ -1,5 +1,4 @@
 import { BadRequestException, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
-import { IAlbum } from 'src/modules/album/album.interface';
 import { ITrack } from 'src/modules/track/track.interface';
 import { checkUUID } from 'src/utils/checkUUID';
 import { IFavorites } from '../favorites.interface';
@@ -18,7 +17,7 @@ async getFavorites(): Promise<IFavorites> {
 
 @Post('/:type/:id')
 @HttpCode(HttpStatus.CREATED)
-async addFavorite(@Param('type') type: string, @Param('id') id: string): Promise<| IAlbum | ITrack> {
+async addFavorite(@Param('type') type: string, @Param('id') id: string): Promise< ITrack> {
   if (!checkUUID(id)) throw new BadRequestException(`${type} ID is invalid`);
   return this.favoritesService.addFavorite(type, id);
 }

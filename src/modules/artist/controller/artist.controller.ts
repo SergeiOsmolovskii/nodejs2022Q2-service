@@ -35,5 +35,4 @@ export class ArtistController {
   public async deleteArtist(@Param('id', new ParseUUIDPipe()) id: string) {   
     return this.artistService.deleteArtist(id);
   }
-
 }

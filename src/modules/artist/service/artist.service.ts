@@ -34,7 +34,7 @@ export class ArtistService {
     return await this.artistsRepository.save({...currentArtist, ...artist});
   }
 
-  public async deleteArtist(id: string){
+  public async deleteArtist(id: string) {
     const currentArtist = await this.artistsRepository.findOneBy({id});
     if (!currentArtist) throw new NotFoundException(`Artist with ${id} not found`);
     return await this.artistsRepository.remove(currentArtist);
