@@ -1,13 +1,10 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { checkUUID } from 'src/utils/checkUUID';
 import { UpdatePasswordDto } from '../dto/update-password.tdo';
-import { UserEntity } from '../entity/user.entity';
 
 @Controller('user')
 export class UserController {
-
   constructor(private userService: UserService ) {}
 
   @Get()

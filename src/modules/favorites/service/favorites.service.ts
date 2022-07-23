@@ -1,7 +1,6 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
 import { IAlbum } from 'src/modules/album/album.interface';
-import { IArtist } from 'src/modules/artist/artist.interface';
 import { ITrack } from 'src/modules/track/track.interface';
 import { IFavorites } from '../favorites.interface';
 
@@ -15,10 +14,10 @@ export class FavoritesService {
     const artists = this.inMemoryDB.artists.filter(artist => artistsIds.includes(artist.id));
     const albums = this.inMemoryDB.albums.filter(album => albumsIds.includes(album.id));
     const tracks = this.inMemoryDB.tracks.filter(track => tracksIds.includes(track.id));   
-    return { artists, albums, tracks };
+    return { albums, tracks };
   }
 
-  public async addFavorite(type: string, id:string): Promise<IArtist | IAlbum | ITrack>  {       
+  public async addFavorite(type: string, id:string): Promise<IAlbum | ITrack>  {       
     if (type === 'artist') {
       const artist = this.inMemoryDB.artists.find(artist => artist.id === id);
 

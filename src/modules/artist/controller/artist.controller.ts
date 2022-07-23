@@ -1,10 +1,7 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { ArtistService } from '../service/artist.service';
-import { IArtist } from '../artist.interface';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { UpdateArtistDto } from '../dto/update-artist.dto';
-import { checkUUID } from 'src/utils/checkUUID';
-
 
 @Controller('artist')
 export class ArtistController {
@@ -12,42 +9,30 @@ export class ArtistController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  public async getArtists(): Promise<IArtist[]> {
+  public async getArtists() {
     return this.artistService.getArtists();
   }
 
   @Post()
-  async addArtist(@Body() artist: CreateArtistDto): Promise<IArtist> {
+  async addArtist(@Body() artist: CreateArtistDto) {
     return this.artistService.addArtist(artist);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  public async getArtisiById(@Param('id') id: string) {
-    
-    if (!checkUUID(id)) throw new BadRequestException('Artist ID is invalid');
-    if (!(await this.artistService.getArtisiById(id))) throw new NotFoundException('Artist with this ID not found');
-
+  public async getArtisiById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.artistService.getArtisiById(id);
   }
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  public async updateArtist(@Param('id') id: string, @Body() artist: UpdateArtistDto): Promise<IArtist> {
-
-    if (!checkUUID(id)) throw new BadRequestException('Artist ID is invalid');
-    if (!(await this.artistService.getArtisiById(id))) throw new NotFoundException('Artist with this ID not found');
-
+  public async updateArtist(@Param('id', new ParseUUIDPipe()) id: string, @Body() artist: UpdateArtistDto) {
     return this.artistService.updateArtist(id, artist);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteArtist(@Param('id') id: string): Promise<void> {
-
-    if (!checkUUID(id)) throw new BadRequestException('Artist ID is invalid');
-    if (!(await this.artistService.getArtisiById(id))) throw new NotFoundException('Artist with this ID not found');
-    
+  public async deleteArtist(@Param('id', new ParseUUIDPipe()) id: string) {   
     return this.artistService.deleteArtist(id);
   }
 

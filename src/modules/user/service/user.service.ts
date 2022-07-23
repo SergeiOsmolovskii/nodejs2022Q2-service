@@ -1,9 +1,8 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdatePasswordDto } from '../dto/update-password.tdo';
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdatePasswordDto } from '../dto/update-password.tdo';
 import { UserEntity } from '../entity/user.entity';
 
 @Injectable()
@@ -42,5 +41,4 @@ export class UserService {
     if (!currentUser) throw new NotFoundException(`User with ${id} not found`);
     await this.usersRepository.delete(id);
   }
-
 }
