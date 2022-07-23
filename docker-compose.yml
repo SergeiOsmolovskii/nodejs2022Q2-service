@@ -27,7 +27,7 @@ services:
     image: anarxist277/rest-service:service_DB
     env_file:
       - .env
-    build: ./database/
+    build: ./postgres/
     ports:
       - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     restart: unless-stopped

@@ -3,7 +3,6 @@ import { IAlbum } from 'src/modules/album/album.interface';
 import { IArtist } from 'src/modules/artist/artist.interface';
 import { IFavoritesIds } from 'src/modules/favorites/favorites.interface';
 import { ITrack } from 'src/modules/track/track.interface';
-import { IUser } from 'src/modules/user/user.interface';
 
 @Injectable()
 export class InMemoryDbService {
@@ -17,7 +16,6 @@ export class InMemoryDbService {
     return InMemoryDbService.instance;
   }
 
-  public users: IUser[] = [];
   public albums: IAlbum[] = [];
   public artists: IArtist[] = [];
   public tracks: ITrack[] = [];

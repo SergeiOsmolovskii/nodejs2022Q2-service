@@ -1,79 +1,85 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { IUser } from '../user.interface';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { v4 as uuid } from 'uuid';
 import { UpdatePasswordDto } from '../dto/update-password.tdo';
-import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../entity/user.entity';
 
 @Injectable()
 export class UserService {
 
-  constructor(private readonly inMemoryDB: InMemoryDbService) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
+  ) {}
 
-  public async getAllUsers(): Promise<IUser[]> {
-    return this.inMemoryDB.users;
+  public async getAllUsers(): Promise<UserEntity[]> {
+    return await this.usersRepository.find();
+    // return allUsers.map(user => user.toResponse());
   }
 
-  public async createUser(user: CreateUserDto): Promise<IUser> {
-    const createdAt = +Date.now();
-    const updatedAt = +Date.now();
-    const version = 1;
-    const newUser = {
-      login: user.login,
-      id: uuid(),
-      createdAt: createdAt,
-      version: version,
-      updatedAt: updatedAt,
+  async createUser(userDto: CreateUserDto) {
+    const savedUser = await this.usersRepository.save({
+      // ...userDto,
+      // createdAt: +new Date(),
+      // updatedAt: +new Date(),
+    });
+    return {
+      // id: savedUser.id,
+      // login: savedUser.login,
+      // version: savedUser.version,
+      // createdAt: +savedUser.createdAt,
+      // updatedAt: +savedUser.updatedAt,
     };
-
-    this.inMemoryDB.users.push({...newUser, password: user.password});
-    return newUser;
   }
 
-  public async getUserById(id: string): Promise<IUser> {
-
-    const user = this.inMemoryDB.users.find(user => user.id === id);
-   
-    const currentData = {
-      login: user.login,
-      id: user.id,
-      createdAt: user.createdAt,
-      version: user.version,
-      updatedAt: user.updatedAt
-    };    
-
-    return currentData;
-  }
-
-  public async updateUser(id: string, passwords: UpdatePasswordDto): Promise<IUser> {
-    const index = this.inMemoryDB.users.findIndex(user => user.id === id);
-    const currentUser = this.inMemoryDB.users[index];
-
-    if (currentUser.password !== passwords.oldPassword) {
-      throw new ForbiddenException('Old password is incorrect');
-    }
-
-    const updatedUser = {
-      login: currentUser.login,
-      createdAt: currentUser.createdAt,
-      id,
-      version: currentUser.version + 1,
-      updatedAt: +Date.now()
-    };
-
-    this.inMemoryDB.users[index] = {
-      ...updatedUser,
-      password: passwords.newPassword
-    };
+  public async getUserById(id: string) {
+    const user = await this.usersRepository.findOne( { where: { id: id } } );
     
-    return updatedUser;
+    if (!user) {
+      throw new ForbiddenException(`User with ${id} not found`);
+    }
+    
+    return user;
+   
+    // const currentData = {
+    //   login: user.login,
+    //   id: user.id,
+    //   createdAt: user.createdAt,
+    //   version: user.version,
+    //   updatedAt: user.updatedAt
+    // };    
+
+    // return currentData;
   }
 
-  public async deleteUser(id: string): Promise<IUser> {
-    const index = this.inMemoryDB.users.findIndex(user => user.id === id);
-    const user = this.inMemoryDB.users[index];
-    this.inMemoryDB.users.splice(index, 1);
-    return user;
+  // public async updateUser(id: string, passwords: UpdatePasswordDto): Promise<IUser> {
+  //   const index = this.inMemoryDB.users.findIndex(user => user.id === id);
+  //   const currentUser = this.inMemoryDB.users[index];
+
+  //   if (currentUser.password !== passwords.oldPassword) {
+  //     throw new ForbiddenException('Old password is incorrect');
+  //   }
+
+  //   const updatedUser = {
+  //     login: currentUser.login,
+  //     createdAt: currentUser.createdAt,
+  //     id,
+  //     version: currentUser.version + 1,
+  //     updatedAt: +Date.now()
+  //   };
+
+  //   this.inMemoryDB.users[index] = {
+  //     ...updatedUser,
+  //     password: passwords.newPassword
+  //   };
+    
+  //   return updatedUser;
+  // }
+
+  public async deleteUser(id: string): Promise<void> {
+    await this.usersRepository.delete(id);
   }
 
 }
