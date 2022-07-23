@@ -1,6 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
-import { ITrack } from 'src/modules/track/track.interface';
 import { IFavorites } from '../favorites.interface';
 
 @Injectable()
@@ -16,7 +15,7 @@ export class FavoritesService {
     return { tracks };
   }
 
-  public async addFavorite(type: string, id:string): Promise< ITrack>  {       
+  public async addFavorite(type: string, id:string) {       
     if (type === 'artist') {
       const artist = this.inMemoryDB.artists.find(artist => artist.id === id);
 

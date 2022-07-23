@@ -1,6 +1,3 @@
-
-import { ITrack } from "../track/track.interface";
-
 export interface IFavoritesIds {
   artistsIds: string[];
   albumsIds: string[];
@@ -10,5 +7,5 @@ export interface IFavoritesIds {
 export interface IFavorites {
   // artists: IArtist[];
   // albums: IAlbum[];
-  tracks: ITrack[];
+  // tracks: ITrack[];
 }
