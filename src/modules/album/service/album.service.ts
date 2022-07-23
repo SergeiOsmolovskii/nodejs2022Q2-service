@@ -13,31 +13,31 @@ export class AlbumService {
     private readonly albumsRepository: Repository<AlbumEntity>,
   ) {}
 
-  public async getAlbums() {
+  public async getAlbums(): Promise<AlbumEntity[]> {
     return this.albumsRepository.find();
   }
 
-  public async addAlbum(albumDto: CreateAlbumDto) {
+  public async addAlbum(albumDto: CreateAlbumDto): Promise<AlbumEntity> {
     const newAlbum = this.albumsRepository.create(albumDto);
     return this.albumsRepository.save(newAlbum);
   }
 
-  public async getAlbumById(id: string) {
+  public async getAlbumById(id: string): Promise<AlbumEntity> {
     const currentAlbum = await this.albumsRepository.findOneBy({id});
     if (!currentAlbum) throw new NotFoundException(`Album with ${id} not found`);
     return currentAlbum;
   }
 
-  public async updateAlbum(id: string, album: UpdateAlbumDto) {
+  public async updateAlbum(id: string, album: UpdateAlbumDto): Promise<AlbumEntity> {
     const currentAlbum = await this.albumsRepository.findOneBy({id});
     if (!currentAlbum) throw new NotFoundException(`Album with ${id} not found`);
     return await this.albumsRepository.save({...currentAlbum, ...album});
   }
 
-  public async deleteAlbum(id: string) {
+  public async deleteAlbum(id: string): Promise<void> {
     const currentAlbum = await this.albumsRepository.findOneBy({id});
     if (!currentAlbum) throw new NotFoundException(`Album with ${id} not found`);
-    return await this.albumsRepository.remove(currentAlbum);
+    await this.albumsRepository.remove(currentAlbum);
   }
 
 }

@@ -13,30 +13,30 @@ export class ArtistService {
     private readonly artistsRepository: Repository<ArtistEntity>,
   ) {}
 
-  public async getArtists() {
+  public async getArtists(): Promise<ArtistEntity[]> {
     return this.artistsRepository.find();
   }
 
-  public addArtist(artistDto: CreateArtistDto) { 
+  public addArtist(artistDto: CreateArtistDto): Promise<ArtistEntity> { 
     const newArtist = this.artistsRepository.create(artistDto);
     return this.artistsRepository.save(newArtist);
   }
 
-  public async getArtisiById(id: string) {
+  public async getArtisiById(id: string): Promise<ArtistEntity> {
     const currentArtist = await this.artistsRepository.findOneBy({id});
     if (!currentArtist) throw new NotFoundException(`User with ${id} not found`);
     return currentArtist;
   }
 
-  public async updateArtist(id: string, artist: UpdateArtistDto) {
+  public async updateArtist(id: string, artist: UpdateArtistDto): Promise<ArtistEntity> {
     const currentArtist = await this.artistsRepository.findOneBy({id});
     if (!currentArtist) throw new NotFoundException(`Artist with ${id} not found`);
     return await this.artistsRepository.save({...currentArtist, ...artist});
   }
 
-  public async deleteArtist(id: string) {
+  public async deleteArtist(id: string): Promise<void> {
     const currentArtist = await this.artistsRepository.findOneBy({id});
     if (!currentArtist) throw new NotFoundException(`Artist with ${id} not found`);
-    return await this.artistsRepository.remove(currentArtist);
+    await this.artistsRepository.remove(currentArtist);
   }
 }

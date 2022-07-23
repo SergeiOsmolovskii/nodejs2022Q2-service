@@ -9,30 +9,30 @@ export class ArtistController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  public async getArtists() {
+  public async getArtists(): Promise<CreateArtistDto[]> {
     return this.artistService.getArtists();
   }
 
   @Post()
-  async addArtist(@Body() artist: CreateArtistDto) {
+  async addArtist(@Body() artist: CreateArtistDto): Promise<CreateArtistDto> {
     return this.artistService.addArtist(artist);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  public async getArtisiById(@Param('id', new ParseUUIDPipe()) id: string) {
+  public async getArtisiById(@Param('id', new ParseUUIDPipe()) id: string): Promise<CreateArtistDto> {
     return this.artistService.getArtisiById(id);
   }
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  public async updateArtist(@Param('id', new ParseUUIDPipe()) id: string, @Body() artist: UpdateArtistDto) {
+  public async updateArtist(@Param('id', new ParseUUIDPipe()) id: string, @Body() artist: UpdateArtistDto): Promise<CreateArtistDto> {
     return this.artistService.updateArtist(id, artist);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteArtist(@Param('id', new ParseUUIDPipe()) id: string) {   
+  public async deleteArtist(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {   
     return this.artistService.deleteArtist(id);
   }
 }
