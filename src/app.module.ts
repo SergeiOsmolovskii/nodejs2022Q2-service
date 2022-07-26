@@ -9,7 +9,6 @@ import { AlbumModule } from './modules/album/album.module';
 import { TrackModule } from './modules/track/track.module';
 import { UserModule } from './modules/user/user.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
-import { InMemoryDbService } from './in-memory-db/in-memory-db.service';
 
 @Module({
   imports: [
@@ -31,7 +30,7 @@ import { InMemoryDbService } from './in-memory-db/in-memory-db.service';
     FavoritesModule
   ],
   controllers: [AppController],
-  providers: [AppService, InMemoryDbService],
+  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

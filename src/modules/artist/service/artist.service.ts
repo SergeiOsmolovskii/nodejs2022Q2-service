@@ -24,7 +24,7 @@ export class ArtistService {
 
   public async getArtisiById(id: string): Promise<ArtistEntity> {
     const currentArtist = await this.artistsRepository.findOneBy({id});
-    if (!currentArtist) throw new NotFoundException(`User with ${id} not found`);
+    if (!currentArtist) throw new NotFoundException(`Artist with ${id} not found`);
     return currentArtist;
   }
 

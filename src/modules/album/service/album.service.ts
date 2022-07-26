@@ -24,19 +24,19 @@ export class AlbumService {
 
   public async getAlbumById(id: string): Promise<AlbumEntity> {
     const currentAlbum = await this.albumsRepository.findOneBy({id});
-    if (!currentAlbum) throw new NotFoundException(`Album with ${id} not found`);
+    if (!currentAlbum) throw new NotFoundException(`Album with id ${id} not found`);
     return currentAlbum;
   }
 
   public async updateAlbum(id: string, album: UpdateAlbumDto): Promise<AlbumEntity> {
     const currentAlbum = await this.albumsRepository.findOneBy({id});
-    if (!currentAlbum) throw new NotFoundException(`Album with ${id} not found`);
+    if (!currentAlbum) throw new NotFoundException(`Album with id ${id} not found`);
     return await this.albumsRepository.save({...currentAlbum, ...album});
   }
 
   public async deleteAlbum(id: string): Promise<void> {
     const currentAlbum = await this.albumsRepository.findOneBy({id});
-    if (!currentAlbum) throw new NotFoundException(`Album with ${id} not found`);
+    if (!currentAlbum) throw new NotFoundException(`Album with id ${id} not found`);
     await this.albumsRepository.remove(currentAlbum);
   }
 
