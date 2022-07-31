@@ -8,11 +8,12 @@
   "scripts": {
     "docker": "docker-compose up",
     "docker:scan": "docker scan anarxist277/rest-service:service_app",
+    "docker:dev" : "npm run build && npm run migration:run && npm run start:dev",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": " nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -20,7 +21,10 @@
     "test:auth": "cross-env TEST_MODE=auth jest --config ./test/jest-e2e.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "typeorm": "ts-node ./node_modules/typeorm/cli -d ./src/config/typeorm.config.ts",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate ./src/migrations/ -d ./src/config/typeorm.config.ts",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d ./src/config/typeorm.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
