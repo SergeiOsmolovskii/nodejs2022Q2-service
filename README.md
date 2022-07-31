@@ -17,6 +17,11 @@ git checkout feat/conteinerization
 docker compose up
 ```
 
+## Scan
+```
+npm run docker:scan
+```
+
 ## Installing NPM modules
 
 ```
