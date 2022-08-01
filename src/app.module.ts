@@ -18,7 +18,7 @@ import { typeOrmConfig } from './config/typeorm.config';
     AlbumModule,
     TrackModule,
     UserModule,
-    FavoritesModule
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
