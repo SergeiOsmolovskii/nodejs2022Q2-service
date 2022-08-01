@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+
 import { UserEntity } from '../../user/entity/user.entity';
 import { SigninUserDto } from '../dto/singin-user.dto';
-
 
 @Injectable()
 export class AuthService {
@@ -13,6 +12,7 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+    private jwtService: JwtService
   ) {}
 
   public async signin(body: SigninUserDto): Promise<{token: string}> {    
@@ -25,10 +25,8 @@ export class AuthService {
     if (!(body.password === user.password)) {
       throw new HttpException('User was not founded!', HttpStatus.FORBIDDEN);
     }
-
-/* TO FIX */
-    
-    const token = jwt.sign({ id: user.id, login: body.login }, process.env.JWT_SECRET_KEY as string);
+   
+    const token = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });
     
     return { token };
   }
