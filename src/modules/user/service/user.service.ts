@@ -1,5 +1,7 @@
+import * as bcrypt from 'bcrypt';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { generatePasswordHash } from '../../helpers/passwordHashGenerator';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdatePasswordDto } from '../dto/update-password.tdo';
@@ -18,7 +20,9 @@ export class UserService {
   }
 
   async createUser(userDto: CreateUserDto) {
-    const createdUser = this.usersRepository.create(userDto);
+    const passwordAsHash = await generatePasswordHash(userDto.password);
+    const newUserData = {...userDto, password: passwordAsHash} 
+    const createdUser = this.usersRepository.create(newUserData);
     return (await this.usersRepository.save(createdUser)).toResponse();
   }
 
@@ -30,9 +34,14 @@ export class UserService {
 
   public async updateUser(id: string, passwords: UpdatePasswordDto) {
     const currentUser = await this.usersRepository.findOneBy({id});
+    const newPasswordAsHash = await generatePasswordHash(passwords.newPassword);
+    
     if (!currentUser) throw new NotFoundException(`User with ${id} not found`);
-    if (currentUser.password !== passwords.oldPassword) throw new ForbiddenException('Old password is incorrect');
-    currentUser.password = passwords.newPassword;
+    
+    const isValid = await bcrypt.compare(passwords.oldPassword, currentUser.password);
+
+    if (!isValid) throw new ForbiddenException('Old password is incorrect');
+    currentUser.password = newPasswordAsHash;
     return (await this.usersRepository.save(currentUser)).toResponse();
   }
 

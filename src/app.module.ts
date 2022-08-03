@@ -9,6 +9,7 @@ import { TrackModule } from './modules/track/track.module';
 import { UserModule } from './modules/user/user.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
 import { typeOrmConfig } from './config/typeorm.config';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { typeOrmConfig } from './config/typeorm.config';
     TrackModule,
     UserModule,
     FavoritesModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
