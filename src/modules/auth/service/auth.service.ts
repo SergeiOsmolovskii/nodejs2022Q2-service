@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -28,10 +28,22 @@ export class AuthService {
       throw new HttpException('User was not founded!', HttpStatus.FORBIDDEN);
     }
    
-    const accessToken = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });
-    const refreshtoken = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME });
-    
+    const accessToken = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });  
     return { accessToken };
+  }
+
+  public async refreshToken(token: {refreshToken: string}) {
+
+    try {
+      const verify = this.jwtService.verify(token.refreshToken);
+
+      const refreshToken = this.jwtService.sign({ id: verify.id, login: verify.login }, { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME });
+      const accessToken = this.jwtService.sign({ id: verify.id, login: verify.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });
+
+      return { accessToken, refreshToken };
+    } catch (e) {
+      throw new ForbiddenException('Invalid refresh token');
+    }
   }
   
 }

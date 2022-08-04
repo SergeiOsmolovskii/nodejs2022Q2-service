@@ -11,13 +11,19 @@ export class JwtAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     
     try {
-      console.log(request.headers.authorization);
+
       const [bearer, token] = request.headers.authorization.split(' ');
 
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException('Invalid token');
       }
 
+      const verify = this.jwtService.verify(token);
+
+      if ((verify.exp * 1000) <= Date.now()) {
+        return false;
+      }
+      
       return true;
     } catch (e) {
       throw new UnauthorizedException('Invalid token');

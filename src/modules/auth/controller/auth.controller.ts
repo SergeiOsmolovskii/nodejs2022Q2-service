@@ -18,4 +18,8 @@ export class AuthController {
     return this.usersService.createUser(body);
   }
 
+  @Post('/refresh')
+  refreshToken(@Body() token: {refreshToken: string}){
+    return this.authService.refreshToken(token);
+  }
 }
