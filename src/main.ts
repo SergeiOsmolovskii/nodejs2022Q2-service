@@ -6,11 +6,12 @@ import { parse } from 'yaml';
 import { dirname, join } from 'path';
 import { AppModule } from './app.module';
 import 'dotenv/config';
+import { HttpExceptionFilter } from './logging/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const rootDirname = dirname(__dirname);
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');
