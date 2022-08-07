@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPi
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { CreateTrackDto } from '../dto/create-track.dto';
 import { TrackService } from '../service/track.service';
-import { HttpExceptionFilter } from '../../../logging/http-exception.filter';
+import { AllExceptionFilter } from '../../../logging/allException.filter';
 
 @UseGuards(JwtAuthGuard)
 @Controller('track')
@@ -12,34 +12,34 @@ export class TrackController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @UseFilters(HttpExceptionFilter)
+  @UseFilters(AllExceptionFilter)
   public async getTracks(): Promise<CreateTrackDto[]> {
     return this.trackService.getTracks();
   }
 
   @Post()
-  @UseFilters(HttpExceptionFilter)
+  @UseFilters(AllExceptionFilter)
   public async addTrack(@Body() track: CreateTrackDto): Promise<CreateTrackDto> {
     return this.trackService.addTrack(track);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  @UseFilters(HttpExceptionFilter)
+  @UseFilters(AllExceptionFilter)
   public async getTrackById(@Param('id', new ParseUUIDPipe()) id: string): Promise<CreateTrackDto> {
     return this.trackService.getTrackById(id);
   }
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  @UseFilters(HttpExceptionFilter)
+  @UseFilters(AllExceptionFilter)
   public async updateTrack(@Param('id', new ParseUUIDPipe()) id: string, @Body() track: CreateTrackDto): Promise<CreateTrackDto> {
     return this.trackService.updateTrack(id, track);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseFilters(HttpExceptionFilter)
+  @UseFilters(AllExceptionFilter)
   public async deleteTrack(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     return this.trackService.deleteTrack(id);
   }

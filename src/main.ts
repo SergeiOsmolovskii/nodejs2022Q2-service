@@ -6,15 +6,17 @@ import { parse } from 'yaml';
 import { dirname, join } from 'path';
 import { AppModule } from './app.module';
 import 'dotenv/config';
-import { HttpExceptionFilter } from './logging/http-exception.filter';
+import { AllExceptionFilter } from './logging/allException.filter';
 import { MyLoggerService } from './logging/my-logger/my-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new MyLoggerService()
+    bufferLogs: true,
   });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new AllExceptionFilter());
+  app.useLogger(new MyLoggerService());
 
   const rootDirname = dirname(__dirname);
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');

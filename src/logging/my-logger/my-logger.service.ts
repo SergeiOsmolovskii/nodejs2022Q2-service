@@ -19,7 +19,7 @@ export class MyLoggerService extends ConsoleLogger {
     if (+process.env.LOG_LEVEL >= 1) {
       writeLogsToFile(message, 'log', 'src/logs/allLogs');
       writeLogsToFile(message, 'log', 'src/logs/errorLogs');
-      super.error(message);
+      super.error(`${message} -> ${trace}`);
     }
   }
 
@@ -39,7 +39,7 @@ export class MyLoggerService extends ConsoleLogger {
 
   verbose(message: string) {
     if (+process.env.LOG_LEVEL >= 4) {
-      writeLogsToFile(message, 'debug', 'src/logs/allLogs');
+      writeLogsToFile(message, 'verbose', 'src/logs/allLogs');
       super.verbose(message);
     }
   }
