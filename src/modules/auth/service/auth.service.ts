@@ -15,7 +15,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  public async signin(body: SigninUserDto): Promise<{accessToken: string}> {    
+  public async signin(body: SigninUserDto): Promise<{accessToken: string, refreshToken: string}> {    
     const user = await this.usersRepository.findOne({ select: ['id', 'password'], where: { login: body.login } });
  
     if (!user) {
@@ -28,8 +28,10 @@ export class AuthService {
       throw new HttpException('User was not founded!', HttpStatus.FORBIDDEN);
     }
    
-    const accessToken = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });  
-    return { accessToken };
+    const accessToken = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });
+    const refreshToken = this.jwtService.sign({ id: user.id, login: body.login }, { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME });
+
+    return { accessToken, refreshToken };
   }
 
   public async refreshToken(token: {refreshToken: string}) {
