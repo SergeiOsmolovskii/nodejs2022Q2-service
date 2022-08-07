@@ -7,9 +7,12 @@ import { dirname, join } from 'path';
 import { AppModule } from './app.module';
 import 'dotenv/config';
 import { HttpExceptionFilter } from './logging/http-exception.filter';
+import { MyLoggerService } from './logging/my-logger/my-logger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new MyLoggerService()
+  });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
 
