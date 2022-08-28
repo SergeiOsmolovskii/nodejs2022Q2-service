@@ -1,44 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { IAlbum } from '../album.interface';
-import { v4 as uuid } from 'uuid';
-import { InMemoryDbService } from 'src/in-memory-db/in-memory-db.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateAlbumDto } from '../dto/create-album.dto';
+import { UpdateAlbumDto } from '../dto/update-album.dto';
+import { AlbumEntity } from '../entity/album.entity';
 
 @Injectable()
 export class AlbumService {
 
-  constructor(private inMemoryDB: InMemoryDbService) {}
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private readonly albumsRepository: Repository<AlbumEntity>,
+  ) {}
 
-  public async getAlbums(): Promise<IAlbum[]> {
-    return this.inMemoryDB.albums;
+  public async getAlbums(): Promise<AlbumEntity[]> {
+    return this.albumsRepository.find();
   }
 
-  public async addAlbum(album: IAlbum): Promise<IAlbum> {
-    const newAlbum = { ...album, id: uuid() };
-    this.inMemoryDB.albums.push(newAlbum);
-    return newAlbum;
+  public async addAlbum(albumDto: CreateAlbumDto): Promise<AlbumEntity> {
+    const newAlbum = this.albumsRepository.create(albumDto);
+    return this.albumsRepository.save(newAlbum);
   }
 
-  public async getAlbumById(id: string): Promise<IAlbum> {
-    return this.inMemoryDB.albums.find(album => album.id === id);
+  public async getAlbumById(id: string): Promise<AlbumEntity> {
+    const currentAlbum = await this.albumsRepository.findOneBy({id});
+    if (!currentAlbum) throw new NotFoundException(`Album with id ${id} not found`);
+    return currentAlbum;
   }
 
-  public async updateAlbum(id: string, album: IAlbum): Promise<IAlbum> {
-    const index = this.inMemoryDB.albums.findIndex(album => album.id === id);
-    const updatedAlbum = { ...album, id };
-    this.inMemoryDB.albums[index] = updatedAlbum;
-    return updatedAlbum;
+  public async updateAlbum(id: string, album: UpdateAlbumDto): Promise<AlbumEntity> {
+    const currentAlbum = await this.albumsRepository.findOneBy({id});
+    if (!currentAlbum) throw new NotFoundException(`Album with id ${id} not found`);
+    return await this.albumsRepository.save({...currentAlbum, ...album});
   }
 
   public async deleteAlbum(id: string): Promise<void> {
-    const index = this.inMemoryDB.albums.findIndex(album => album.id === id);
-    const album = this.inMemoryDB.albums[index];
-    const track = this.inMemoryDB.tracks.findIndex(track => track.albumId === album.id);
-    
-    if (track !== -1) {
-      this.inMemoryDB.tracks[track].albumId = null;
-      return null;
-    }
-    this.inMemoryDB.albums.splice(index, 1);
+    const currentAlbum = await this.albumsRepository.findOneBy({id});
+    if (!currentAlbum) throw new NotFoundException(`Album with id ${id} not found`);
+    await this.albumsRepository.remove(currentAlbum);
   }
 
 }
