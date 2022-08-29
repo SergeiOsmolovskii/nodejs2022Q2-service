@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SigninUserDto } from '../dto/singin-user.dto';
+import { writeLogsToFile } from 'src/modules/helpers/logsToFile';
 
 @Injectable()
 export class AuthService {
@@ -38,10 +39,8 @@ export class AuthService {
 
     try {
       const verify = this.jwtService.verify(token.refreshToken);
-
       const refreshToken = this.jwtService.sign({ id: verify.id, login: verify.login }, { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME });
       const accessToken = this.jwtService.sign({ id: verify.id, login: verify.login }, { expiresIn: process.env.TOKEN_EXPIRE_TIME });
-
       return { accessToken, refreshToken };
     } catch (e) {
       throw new ForbiddenException('Invalid refresh token');
