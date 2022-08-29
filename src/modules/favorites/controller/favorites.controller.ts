@@ -1,6 +1,8 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { FavoritesService } from '../service/favorites.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('favs')
 export class FavoritesController {
 
